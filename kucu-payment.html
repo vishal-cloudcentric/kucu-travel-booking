@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KucuTravel – Payment Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Poppins', sans-serif; background: #f4f6fa; color: #222; font-size: 14px; }
+
+  /* ── NAV ── */
+  nav {
+    background: #1a2d4e;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; }
+  .nav-logo .owl {
+    width: 36px; height: 36px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .nav-logo span { font-size: 20px; font-weight: 700; color: #fff; }
+  .nav-logo span em { color: #f97316; font-style: normal; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { color: #cbd5e1; text-decoration: none; font-size: 13px; font-weight: 400; }
+  .nav-links a:hover { color: #fff; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    background: transparent; border: 1px solid #4a6fa5; color: #fff;
+    padding: 5px 14px; border-radius: 6px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-btn svg { width: 14px; height: 14px; }
+  .nav-dropdown {
+    background: #253d5e; border: 1px solid #3b5278; color: #fff;
+    padding: 5px 10px; border-radius: 6px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px; display: flex; gap: 24px; }
+  .left-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .right-col { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    padding: 20px 24px;
+  }
+
+  /* ── PAYMENT HEADER ── */
+  .pay-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    border-bottom: 1px solid #e8edf4; padding-bottom: 14px; margin-bottom: 18px;
+  }
+  .pay-header-left { display: flex; align-items: center; gap: 10px; }
+  .shield-icon { color: #2563eb; font-size: 22px; }
+  .pay-header-left h2 { font-size: 17px; font-weight: 600; color: #1a2d4e; }
+  .pay-header-left p { font-size: 12px; color: #22c55e; font-weight: 500; }
+  .timer-box { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #555; }
+  .timer-box span { color: #ef4444; font-weight: 600; font-size: 14px; }
+
+  /* ── PAYMENT METHOD SECTION ── */
+  .method-label {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .method-label-left { display: flex; align-items: center; gap: 8px; }
+  .step-badge {
+    width: 22px; height: 22px; border-radius: 50%; background: #2563eb;
+    color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .method-label h3 { font-size: 14px; font-weight: 600; }
+  .method-label p { font-size: 11px; color: #888; }
+  .stripe-logo { font-size: 22px; font-weight: 700; color: #6772e5; font-style: italic; letter-spacing: -1px; }
+  .card-brands { display: flex; gap: 5px; align-items: center; }
+  .card-brand {
+    height: 22px; border: 1px solid #e2e8f0; border-radius: 4px;
+    padding: 2px 5px; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; background: #fff;
+  }
+  .visa { color: #1a1f71; }
+  .mc { color: #eb001b; }
+  .amex { color: #007bc1; }
+  .discover { color: #ff6600; }
+  .jcb { color: #003087; }
+  .union { color: #c00; }
+
+  /* ── SAVED CARDS ── */
+  .saved-cards { display: flex; gap: 10px; margin-bottom: 16px; align-items: flex-start; }
+  .saved-card-tile {
+    border: 2px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;
+    cursor: pointer; background: #fafbfd; width: 138px; position: relative;
+    transition: border-color .15s;
+  }
+  .saved-card-tile.selected { border-color: #2563eb; background: #eff6ff; }
+  .saved-card-tile .check {
+    position: absolute; top: 8px; right: 8px; width: 18px; height: 18px;
+    background: #2563eb; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 10px;
+  }
+  .saved-card-icon { font-size: 28px; margin-bottom: 4px; }
+  .saved-card-number { font-size: 13px; font-weight: 600; color: #1a2d4e; letter-spacing: 1px; }
+  .saved-card-exp { font-size: 11px; color: #888; margin-top: 2px; }
+  .new-card-tile {
+    border: 2px dashed #d1d5db; border-radius: 10px; padding: 12px 14px;
+    cursor: pointer; background: #fafbfd; width: 100px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; color: #6b7280; font-size: 12px;
+    transition: border-color .15s, color .15s;
+  }
+  .new-card-tile:hover { border-color: #2563eb; color: #2563eb; }
+  .new-card-tile .plus { font-size: 22px; line-height: 1; }
+
+  /* ── CVV ── */
+  .cvv-section { margin-bottom: 18px; }
+  .cvv-section label { font-size: 12px; font-weight: 500; color: #374151; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
+  .cvv-section label svg { width: 13px; height: 13px; color: #9ca3af; }
+  .cvv-input-wrap { position: relative; }
+  .cvv-input-wrap input {
+    width: 100%; border: 1px solid #d1d5db; border-radius: 8px;
+    padding: 10px 36px 10px 14px; font-size: 14px; outline: none;
+    font-family: inherit; color: #374151;
+    transition: border-color .15s;
+  }
+  .cvv-input-wrap input:focus { border-color: #2563eb; }
+  .cvv-input-wrap .card-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 16px; }
+
+  /* ── NEW CARD FORM ── */
+  .new-card-form { border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 0; }
+  .new-card-form h4 { font-size: 13px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .new-card-form h4 svg { color: #2563eb; }
+  .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .form-group { flex: 1; display: flex; flex-direction: column; }
+  .form-group label { font-size: 12px; font-weight: 500; color: #374151; margin-bottom: 5px; }
+  .form-group input, .form-group select {
+    border: 1px solid #d1d5db; border-radius: 8px;
+    padding: 9px 12px; font-size: 13px; outline: none;
+    font-family: inherit; color: #374151; background: #fff;
+    transition: border-color .15s;
+  }
+  .form-group input::placeholder { color: #9ca3af; }
+  .form-group input:focus, .form-group select:focus { border-color: #2563eb; }
+  .input-with-icon { position: relative; }
+  .input-with-icon input { padding-right: 36px; width: 100%; }
+  .input-with-icon .iicon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 15px; }
+  .save-card-check { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #374151; margin: 12px 0 6px; }
+  .save-card-check input[type=checkbox] { width: 16px; height: 16px; accent-color: #2563eb; }
+  .encrypted-note { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6b7280; }
+  .encrypted-note svg { color: #6b7280; }
+
+  /* ── PAY BUTTON ── */
+  .pay-btn {
+    width: 100%; background: #f97316; color: #fff; border: none;
+    border-radius: 10px; padding: 16px; font-size: 16px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background .15s; letter-spacing: .2px;
+    margin-top: 16px;
+  }
+  .pay-btn:hover { background: #ea6c0a; }
+  .pay-btn-note { text-align: center; font-size: 11px; color: #6b7280; margin-top: 6px; }
+  .pay-btn-note a { color: #2563eb; }
+
+  /* ── INFO BOXES ── */
+  .info-boxes { display: flex; gap: 14px; margin-top: 16px; }
+  .info-box { flex: 1; border: 1px solid #fcd34d; border-radius: 10px; padding: 14px; background: #fffbeb; }
+  .info-box.blue { border-color: #93c5fd; background: #eff6ff; }
+  .info-box h5 { font-size: 12px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .info-box.warning h5 { color: #b45309; }
+  .info-box.blue h5 { color: #1d4ed8; }
+  .info-box ul { list-style: disc; padding-left: 16px; }
+  .info-box ul li { font-size: 11px; color: #555; line-height: 1.6; }
+
+  /* ── RIGHT COLUMN ── */
+  .booking-info-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .booking-info-header h3 { font-size: 15px; font-weight: 600; }
+  .details-link { color: #f97316; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+  .route-row { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+  .route-row span { color: #888; font-size: 16px; }
+
+  .flight-segment { border: 1px solid #e8edf4; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+  .segment-label { font-size: 11px; font-weight: 600; color: #2563eb; margin-bottom: 6px; }
+  .segment-label.return { color: #f97316; }
+  .segment-date { font-size: 11px; color: #888; margin-bottom: 8px; }
+  .segment-times { display: flex; align-items: flex-start; gap: 8px; }
+  .segment-airline { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 4px; }
+  .avianca { background: #fee2e2; }
+  .klm { background: #dbeafe; }
+  .segment-time-col { flex: 1; }
+  .dep-time { font-size: 14px; font-weight: 700; }
+  .dep-airport { font-size: 11px; color: #555; }
+  .stop-info { font-size: 11px; color: #888; margin: 4px 0; padding-left: 2px; }
+  .arr-time { font-size: 14px; font-weight: 700; }
+  .arr-airport { font-size: 11px; color: #555; }
+  .stop-line { display: flex; flex-direction: column; align-items: center; padding: 0 4px; gap: 2px; }
+  .stop-dot { width: 8px; height: 8px; background: #2563eb; border-radius: 50%; }
+  .stop-line-bar { width: 2px; flex: 1; background: #d1d5db; }
+
+  /* ── PRICE ── */
+  .price-section h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .price-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 7px; }
+  .price-row.markup { color: #22c55e; font-weight: 500; }
+  .price-total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid #e8edf4; padding-top: 10px; margin-top: 6px;
+    font-weight: 700; font-size: 14px;
+  }
+  .price-total-row .total-amount { color: #f97316; font-size: 18px; }
+
+  .secure-note { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #555; padding: 10px 12px; border: 1px solid #e8edf4; border-radius: 8px; background: #f9fafb; margin-top: 8px; }
+  .secure-note svg { color: #2563eb; flex-shrink: 0; }
+  .secure-note strong { color: #2563eb; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,20,40,.55); backdrop-filter: blur(3px);
+    z-index: 1000; align-items: flex-start; justify-content: center;
+    overflow-y: auto; padding: 40px 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 14px; width: 100%; max-width: 680px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    display: flex; flex-direction: column; position: relative;
+    animation: modalIn .22s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  .modal-header {
+    padding: 18px 24px 14px; border-bottom: 1px solid #e8edf4;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: #fff; z-index: 2; border-radius: 14px 14px 0 0;
+  }
+  .modal-header h2 { font-size: 16px; font-weight: 700; }
+  .modal-close {
+    width: 28px; height: 28px; border-radius: 50%; background: #f1f5f9;
+    border: none; cursor: pointer; font-size: 16px; color: #555;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-tabs { display: flex; gap: 0; border-bottom: 1px solid #e8edf4; background: #fff; }
+  .modal-tab {
+    padding: 10px 18px; font-size: 12px; font-weight: 500; color: #6b7280;
+    cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none;
+    transition: color .15s;
+  }
+  .modal-tab.active { color: #f97316; border-bottom-color: #f97316; }
+  .modal-body { padding: 20px 24px; display: flex; gap: 20px; }
+  .modal-main { flex: 1; min-width: 0; }
+  .modal-side { width: 220px; flex-shrink: 0; }
+
+  .modal-section { margin-bottom: 22px; }
+  .modal-section-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+
+  /* flight detail */
+  .flight-detail-route { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .flight-detail-route .badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .badge.outbound { background: #dbeafe; color: #1d4ed8; }
+  .badge.return { background: #ffedd5; color: #c2410c; }
+  .flight-detail-meta { font-size: 11px; color: #888; margin-bottom: 10px; }
+
+  .flight-stop { display: flex; gap: 10px; margin-bottom: 6px; align-items: flex-start; }
+  .stop-timeline { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: #2563eb; flex-shrink: 0; }
+  .tl-line { width: 2px; flex: 1; min-height: 28px; background: #d1d5db; }
+  .stop-info-block { flex: 1; padding-bottom: 8px; }
+  .stop-time { font-size: 13px; font-weight: 700; }
+  .stop-airport { font-size: 12px; color: #374151; font-weight: 500; }
+  .stop-airline-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .airline-badge { display: flex; align-items: center; gap: 4px; }
+  .airline-badge img { width: 16px; height: 16px; }
+  .transfer-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 7px 10px; margin: 4px 0 8px; display: flex; align-items: center; justify-content: space-between; }
+  .transfer-box .tf-left { font-size: 11px; }
+  .transfer-box .tf-left strong { color: #0284c7; font-size: 11px; display: flex; align-items: center; gap: 4px; }
+  .transfer-box .tf-right { font-size: 10px; color: #0284c7; border: 1px solid #7dd3fc; padding: 2px 7px; border-radius: 4px; cursor: pointer; }
+
+  /* passenger */
+  .passenger-grid { display: flex; gap: 24px; }
+  .pax-col { flex: 1; }
+  .pax-label { font-size: 11px; color: #888; margin-bottom: 2px; }
+  .pax-val { font-size: 12px; font-weight: 500; }
+  .pax-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .pax-type-badge { display: inline-block; background: #f0fdf4; color: #16a34a; font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 10px; border: 1px solid #86efac; margin-bottom: 8px; }
+
+  /* baggage */
+  .baggage-routes { }
+  .baggage-route-label { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .baggage-items { display: flex; gap: 12px; margin-bottom: 14px; }
+  .baggage-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; text-align: center; flex: 1; }
+  .bag-icon { font-size: 22px; margin-bottom: 4px; }
+  .bag-name { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+  .bag-sub { font-size: 10px; color: #888; margin-bottom: 2px; }
+  .bag-qty { font-size: 11px; color: #22c55e; font-weight: 500; }
+
+  /* modal price */
+  .modal-price-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+  .modal-price-row.markup { color: #22c55e; }
+  .modal-price-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; border-top: 1px solid #e8edf4; padding-top: 8px; margin-top: 4px; }
+  .modal-price-total .amt { color: #f97316; }
+  .modal-secure-note { font-size: 10px; color: #6b7280; text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 12px; }
+
+  /* side price */
+  .side-card { background: #fff; border: 1px solid #e8edf4; border-radius: 10px; padding: 14px; }
+  .side-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .fare-includes-title { font-size: 12px; font-weight: 600; margin: 12px 0 8px; }
+  .fare-include-item { display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 5px; }
+  .fare-include-item svg { color: #2563eb; }
+  .fare-include-val { margin-left: auto; font-size: 11px; color: #22c55e; font-weight: 500; }
+
+  /* scrollbar */
+  .modal-overlay::-webkit-scrollbar { width: 6px; }
+  .modal-overlay::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="owl">🦉</div>
+    <span>Kucu<em>Travel</em></span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Flights</a>
+    <a href="#">Hotels</a>
+    <a href="#">Packages</a>
+    <a href="#">Music Tours</a>
+    <a href="#">Rewards</a>
+    <a href="#">Contact Us</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Login / Sign Up
+    </button>
+    <button class="nav-dropdown">USD ▾</button>
+    <button class="nav-dropdown">EN ▾</button>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <!-- LEFT -->
+  <div class="left-col">
+    <div class="card">
+      <!-- Header -->
+      <div class="pay-header">
+        <div class="pay-header-left">
+          <div class="shield-icon">🔒</div>
+          <div>
+            <h2>Complete your payment</h2>
+            <p>Your payment is secure and encrypted</p>
+          </div>
+        </div>
+        <div class="timer-box">
+          Please complete your payment within &nbsp;<span>⏱ 00:28:14</span>
+        </div>
+      </div>
+
+      <!-- Method -->
+      <div class="method-label">
+        <div class="method-label-left">
+          <div class="step-badge">1</div>
+          <div>
+            <h3>Credit / Debit Card</h3>
+            <p style="font-size:11px;color:#888;">Securely processed by Stripe</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          <div class="stripe-logo">stripe</div>
+          <div class="card-brands">
+            <div class="card-brand visa">VISA</div>
+            <div class="card-brand mc" style="background:#fff;color:#eb001b;">●●</div>
+            <div class="card-brand amex">AMEX</div>
+            <div class="card-brand union">UPay</div>
+            <div class="card-brand jcb">JCB</div>
+            <div class="card-brand discover">DISC</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved Cards -->
+      <div class="saved-cards">
+        <div class="saved-card-tile selected">
+          <div class="check">✓</div>
+          <div class="saved-card-icon">🟠</div>
+          <div class="saved-card-number">•••• 3093</div>
+          <div class="saved-card-exp">Expires 05/27</div>
+        </div>
+        <div class="saved-card-tile">
+          <div class="saved-card-icon">🟠</div>
+          <div class="saved-card-number">•••• 4420</div>
+          <div class="saved-card-exp">Expires 04/26</div>
+        </div>
+        <div class="new-card-tile" onclick="toggleNewCard()">
+          <div class="plus">⊕</div>
+          <div>New card</div>
+        </div>
+      </div>
+
+      <!-- CVV -->
+      <div class="cvv-section">
+        <label>CVV / CVC
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        </label>
+        <div class="cvv-input-wrap">
+          <input type="password" placeholder="Enter CVV">
+          <span class="card-icon">💳</span>
+        </div>
+      </div>
+
+      <!-- New Card Form -->
+      <div class="new-card-form" id="newCardForm">
+        <h4>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Add a new card
+        </h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cardholder name</label>
+            <input type="text" placeholder="Name on card">
+          </div>
+          <div class="form-group">
+            <label>Card number</label>
+            <div class="input-with-icon">
+              <input type="text" placeholder="1234 1234 1234 1234">
+              <span class="iicon">💳</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry date</label>
+            <div class="input-with-icon">
+              <input type="text" placeholder="MM / YY">
+              <span class="iicon" style="font-size:12px;">📅</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>CVV / CVC</label>
+            <div class="input-with-icon">
+              <input type="password" placeholder="123">
+              <span class="iicon" style="font-size:12px;">?</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Billing country</label>
+            <select><option>United States</option><option>India</option><option>Ecuador</option><option>Thailand</option></select>
+          </div>
+        </div>
+        <div class="save-card-check">
+          <input type="checkbox" checked> Save this card securely for faster checkout
+        </div>
+        <div class="encrypted-note">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.3 9 10.3C18.2 21.3 22 17 22 12V7L12 2z"/></svg>
+          Your card details are encrypted and stored by Stripe.
+        </div>
+      </div>
+
+      <!-- Pay Button -->
+      <button class="pay-btn">
+        🔒 Pay US$2,269.64
+      </button>
+      <p class="pay-btn-note">By clicking Pay, you agree to our <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy.</a></p>
+
+      <!-- Info Boxes -->
+      <div class="info-boxes">
+        <div class="info-box warning">
+          <h5>⚠ PAYMENT VALIDATION BEFORE CHARGING</h5>
+          <ul>
+            <li>Revalidate fare, availability, session and price.</li>
+            <li>If price changed or fare expired → show error and do not allow payment.</li>
+            <li>If validation successful → create Stripe Payment Intent.</li>
+            <li>Confirm payment and create booking only after successful payment.</li>
+          </ul>
+        </div>
+        <div class="info-box blue">
+          <h5>💳 SUPPORTED PAYMENT METHOD (CURRENTLY)</h5>
+          <p style="font-size:12px;color:#1d4ed8;font-weight:500;margin-bottom:6px;">Only Credit / Debit Card via Stripe.</p>
+          <p style="font-size:11px;color:#555;">(No PayPal, No Apple Pay, No Google Pay, No Points, No Gift Cards)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <div class="card">
+      <div class="booking-info-header">
+        <h3>Booking info</h3>
+        <div class="details-link" onclick="openModal()">Details &gt;</div>
+      </div>
+      <div class="route-row">
+        <span style="font-size:15px;color:#1a2d4e;">Quito</span>
+        <span>⇄</span>
+        <span style="font-size:15px;color:#1a2d4e;">Bangkok</span>
+      </div>
+
+      <!-- Outbound -->
+      <div class="flight-segment">
+        <div class="segment-label">Outbound</div>
+        <div class="segment-date">Wed, 21 May 2026 &nbsp;•&nbsp; 19h 35m</div>
+        <div class="segment-times">
+          <div class="segment-airline avianca">✈</div>
+          <div style="display:flex;flex-direction:column;gap:2px;flex:1;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="dep-time">14:15</span>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:8px;height:8px;background:#2563eb;border-radius:50%;"></div>
+                <div style="width:1px;flex:1;min-height:18px;background:#d1d5db;"></div>
+              </div>
+              <span class="arr-time">BKK</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:2px;">
+              <span class="dep-airport">UIO &nbsp; Mariscal Sucre Intl.</span>
+              <span class="arr-airport">Suvarnabhumi Airport</span>
+            </div>
+            <div class="stop-info">1 stop &nbsp;•&nbsp; 5h 45m in Bogota</div>
+            <div style="display:flex;justify-content:space-between;"><span style="font-size:13px;font-weight:700;">15:50</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Return -->
+      <div class="flight-segment">
+        <div class="segment-label return">Return</div>
+        <div class="segment-date">Thu, 29 May 2026 &nbsp;•&nbsp; 12h 25m</div>
+        <div class="segment-times">
+          <div class="segment-airline klm">🔵</div>
+          <div style="display:flex;flex-direction:column;gap:2px;flex:1;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="dep-time">09:30</span>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:8px;height:8px;background:#2563eb;border-radius:50%;"></div>
+                <div style="width:1px;flex:1;min-height:18px;background:#d1d5db;"></div>
+              </div>
+              <span class="arr-time">UIO</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:2px;">
+              <span class="dep-airport">BKK &nbsp; Suvarnabhumi Airport</span>
+              <span class="arr-airport">Mariscal Sucre Intl.</span>
+            </div>
+            <div class="stop-info">1 stop &nbsp;•&nbsp; 2h 10m in Bogota</div>
+            <div style="display:flex;justify-content:space-between;"><span style="font-size:13px;font-weight:700;">14:55</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="card">
+      <div class="price-section">
+        <h4>Price details</h4>
+        <div class="price-row"><span>Base fare</span><span>US$1,573.44</span></div>
+        <div class="price-row"><span>Taxes &amp; fees</span><span>US$489.87</span></div>
+        <div class="price-row markup"><span>Markup price</span><span>US$206.33</span></div>
+        <div class="price-row"><span>Extra baggage</span><span>US$0.00</span></div>
+        <div class="price-row"><span>Extra meal</span><span>US$0.00</span></div>
+        <div class="price-row"><span>Extra services</span><span>US$0.00</span></div>
+        <div class="price-total-row">
+          <span>Total price</span>
+          <span class="total-amount">US$2,269.64</span>
+        </div>
+      </div>
+      <div class="secure-note">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.3 9 10.3C18.2 21.3 22 17 22 12V7L12 2z"/></svg>
+        All payments are secure and encrypted. Processed by <strong>&nbsp;Stripe.</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Booking details</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active">Itinerary</button>
+      <button class="modal-tab">Passengers</button>
+      <button class="modal-tab">Contact info</button>
+      <button class="modal-tab">Baggage</button>
+      <button class="modal-tab">Price details</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-main">
+
+        <!-- 1. Flight details -->
+        <div class="modal-section">
+          <div class="modal-section-title">1. Flight details</div>
+
+          <!-- Outbound -->
+          <div class="flight-detail-route">
+            <span class="badge outbound">Outbound</span>
+            Quito (UIO) → Bangkok (BKK) &nbsp;•&nbsp; 21 May 2026 &nbsp;•&nbsp; Total duration: 19h 35m
+          </div>
+
+          <!-- Leg 1 -->
+          <div class="flight-stop">
+            <div class="stop-timeline">
+              <div class="tl-dot"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="stop-info-block">
+              <div class="stop-time">14:15</div>
+              <div class="stop-airport">Quito Mariscal Sucre Intl. (UIO)</div>
+              <div class="stop-airline-row">
+                <span>Avianca &nbsp; AV 108 &nbsp;|&nbsp; Airbus A320 &nbsp;|&nbsp; Economy Class</span>
+                <span style="margin-left:auto;background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:10px;">Terminal 1</span>
+              </div>
+              <div style="font-size:11px;color:#6b7280;">Flight time: 1h 35m</div>
+            </div>
+          </div>
+
+          <div style="margin-left:20px;">
+            <div class="transfer-box">
+              <div class="tf-left">
+                <strong>🔄 Transfer in Bogota: 5h 45m</strong>
+                <div style="font-size:10px;color:#555;">No need to collect and recheck baggage</div>
+              </div>
+              <div class="tf-right">Terminal change</div>
+            </div>
+          </div>
+
+          <!-- Leg 2 -->
+          <div class="flight-stop">
+            <div class="stop-timeline">
+              <div class="tl-dot"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="stop-info-block">
+              <div class="stop-time">21:35</div>
+              <div class="stop-airport">Bogota El Dorado Intl. (BOG)</div>
+              <div class="stop-airline-row">
+                <span>Air France &nbsp; AF 435 &nbsp;|&nbsp; Boeing 787-9 &nbsp;|&nbsp; Economy Class</span>
+                <span style="margin-left:auto;background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:10px;">Direct</span>
+              </div>
+              <div style="font-size:11px;color:#6b7280;">Flight time: 10h 25m</div>
+            </div>
+          </div>
+
+          <!-- Leg 3 arrival -->
+          <div class="flight-stop">
+            <div class="stop-timeline">
+              <div class="tl-dot" style="background:#22c55e;"></div>
+            </div>
+            <div class="stop-info-block">
+              <div class="stop-time">15:00 <span style="font-size:10px;color:#888;font-weight:400;">+1</span></div>
+              <div class="stop-airport">Suvarnabhumi Airport (BKK)</div>
+              <div style="font-size:11px;color:#6b7280;">Bangkok, Thailand &nbsp;•&nbsp; Terminal 1</div>
+            </div>
+          </div>
+
+          <!-- Return -->
+          <div class="flight-detail-route" style="margin-top:14px;">
+            <span class="badge return">Return</span>
+            Bangkok (BKK) → Quito (UIO) &nbsp;•&nbsp; 29 May 2026 &nbsp;•&nbsp; Total duration: 12h 25m
+          </div>
+
+          <!-- Return Leg 1 -->
+          <div class="flight-stop">
+            <div class="stop-timeline">
+              <div class="tl-dot"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="stop-info-block">
+              <div class="stop-time">09:30</div>
+              <div class="stop-airport">Suvarnabhumi Airport (BKK)</div>
+              <div class="stop-airline-row">
+                <span>KLM Royal Dutch Airlines &nbsp; KL 751 &nbsp;|&nbsp; Boeing 777-300ER &nbsp;|&nbsp; Economy Class</span>
+                <span style="margin-left:auto;background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:10px;">Direct</span>
+              </div>
+              <div style="font-size:11px;color:#6b7280;">Flight time: 11h 40m</div>
+            </div>
+          </div>
+
+          <div style="margin-left:20px;">
+            <div class="transfer-box">
+              <div class="tf-left">
+                <strong>🔄 Transfer in Amsterdam: 1h 20m</strong>
+                <div style="font-size:10px;color:#555;">No need to collect and recheck baggage</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Return Leg 2 -->
+          <div class="flight-stop">
+            <div class="stop-timeline">
+              <div class="tl-dot"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="stop-info-block">
+              <div class="stop-time">16:15</div>
+              <div class="stop-airport">Amsterdam Schiphol (AMS)</div>
+              <div class="stop-airline-row">
+                <span>KLM Royal Dutch Airlines &nbsp; KL 846 &nbsp;|&nbsp; Boeing 787-10 &nbsp;|&nbsp; Economy Class</span>
+                <span style="margin-left:auto;background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:10px;">Direct</span>
+              </div>
+              <div style="font-size:11px;color:#6b7280;">Flight time: 12h 40m</div>
+            </div>
+          </div>
+
+          <!-- Return arrival -->
+          <div class="flight-stop">
+            <div class="stop-timeline">
+              <div class="tl-dot" style="background:#22c55e;"></div>
+            </div>
+            <div class="stop-info-block">
+              <div class="stop-time">14:55 <span style="font-size:10px;color:#888;font-weight:400;">+1</span></div>
+              <div class="stop-airport">Quito Mariscal Sucre Intl. (UIO)</div>
+              <div style="font-size:11px;color:#6b7280;">Terminal 1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Passenger -->
+        <div class="modal-section">
+          <div class="modal-section-title">2. Passenger &amp; contact info</div>
+          <div class="passenger-grid">
+            <div class="pax-col">
+              <div style="font-size:11px;color:#888;margin-bottom:2px;">Passenger 1 — Adult</div>
+              <div class="pax-name">Mr. Silesia Gomes</div>
+              <div style="font-size:11px;color:#555;margin-bottom:4px;">Female &nbsp;|&nbsp; 32 years</div>
+              <div style="font-size:11px;color:#555;margin-bottom:2px;">Passport: P12345678 &nbsp;|&nbsp; India</div>
+            </div>
+            <div class="pax-col">
+              <div style="font-size:11px;color:#888;margin-bottom:6px;">Contact info</div>
+              <div style="font-size:12px;margin-bottom:4px;">✉ alanm.jt@gmail.com</div>
+              <div style="font-size:12px;">📞 +44 7884 525492</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Baggage -->
+        <div class="modal-section">
+          <div class="modal-section-title">3. Baggage info (per passenger)</div>
+          <div class="baggage-route-label">Quito → Bangkok</div>
+          <div class="baggage-items">
+            <div class="baggage-item">
+              <div class="bag-icon">👜</div>
+              <div class="bag-name">Personal item</div>
+              <div class="bag-sub">Included</div>
+              <div class="bag-qty">1 piece</div>
+            </div>
+            <div class="baggage-item">
+              <div class="bag-icon">🎒</div>
+              <div class="bag-name">Carry-on baggage</div>
+              <div class="bag-sub">Included</div>
+              <div class="bag-qty">1 piece (max 8 kg)</div>
+            </div>
+            <div class="baggage-item">
+              <div class="bag-icon">🧳</div>
+              <div class="bag-name">Checked baggage</div>
+              <div class="bag-sub">Included</div>
+              <div class="bag-qty">1 piece (max 23 kg)</div>
+            </div>
+          </div>
+          <div class="baggage-route-label">Bangkok → Quito</div>
+          <div class="baggage-items">
+            <div class="baggage-item">
+              <div class="bag-icon">👜</div>
+              <div class="bag-name">Personal item</div>
+              <div class="bag-sub">Included</div>
+              <div class="bag-qty">1 piece</div>
+            </div>
+            <div class="baggage-item">
+              <div class="bag-icon">🎒</div>
+              <div class="bag-name">Carry-on baggage</div>
+              <div class="bag-sub">Included</div>
+              <div class="bag-qty">1 piece (max 8 kg)</div>
+            </div>
+            <div class="baggage-item">
+              <div class="bag-icon">🧳</div>
+              <div class="bag-name">Checked baggage</div>
+              <div class="bag-sub">Included</div>
+              <div class="bag-qty">1 piece (max 23 kg)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Price -->
+        <div class="modal-section">
+          <div class="modal-section-title">4. Price breakdown (for 1 passenger)</div>
+          <div class="modal-price-row"><span>Base fare</span><span>US$1,573.44</span></div>
+          <div class="modal-price-row"><span>Taxes &amp; fees</span><span>US$489.87</span></div>
+          <div class="modal-price-row markup"><span>Markup price</span><span>US$206.33</span></div>
+          <div class="modal-price-row"><span>Extra baggage</span><span>US$0.00</span></div>
+          <div class="modal-price-row"><span>Extra meal</span><span>US$0.00</span></div>
+          <div class="modal-price-row"><span>Extra services</span><span>US$0.00</span></div>
+          <div class="modal-price-total"><span>Total price</span><span class="amt">US$2,269.64</span></div>
+          <div class="modal-secure-note">
+            🔒 Your payment is secure and encrypted. KucuTravel uses industry-standard security to protect your data.
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Side -->
+      <div class="modal-side">
+        <div class="side-card">
+          <h4>Price summary <select style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;color:#555;">
+            <option>USD</option>
+          </select></h4>
+          <div class="modal-price-row"><span>Tickets (1 Adult)</span><span>US$1,573.44</span></div>
+          <div class="modal-price-row" style="font-size:11px;"><span>Base fare</span><span>US$1,573.44</span></div>
+          <div class="modal-price-row"><span>Taxes &amp; fees</span><span>US$489.87</span></div>
+          <div class="modal-price-row markup"><span>Markup price</span><span>US$206.33</span></div>
+          <div class="modal-price-row"><span>Extra baggage</span><span>US$0.00</span></div>
+          <div class="modal-price-row"><span>Extra meal</span><span>US$0.00</span></div>
+          <div class="modal-price-row"><span>Extra services</span><span>US$0.00</span></div>
+          <div class="modal-price-total"><span>Total price</span><span class="amt">US$2,269.64</span></div>
+
+          <div class="fare-includes-title">Selected fare includes</div>
+          <div class="fare-include-item">
+            <svg width="13" height="13" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.3 9 10.3C18.2 21.3 22 17 22 12V7L12 2z"/></svg>
+            Personal item <span class="fare-include-val">Included</span>
+          </div>
+          <div class="fare-include-item">
+            <svg width="13" height="13" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.3 9 10.3C18.2 21.3 22 17 22 12V7L12 2z"/></svg>
+            Carry-on baggage <span class="fare-include-val">Included</span>
+          </div>
+          <div class="fare-include-item">
+            <svg width="13" height="13" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.3 9 10.3C18.2 21.3 22 17 22 12V7L12 2z"/></svg>
+            Checked baggage <span class="fare-include-val">Included</span>
+          </div>
+
+          <div style="font-size:10px;color:#888;margin-top:12px;line-height:1.5;">All prices are in USD and include all taxes and fees. Fares are not guaranteed until payment is made.</div>
+
+          <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280;margin-top:8px;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;background:#f9fafb;">
+            🔒 All prices are in USD and include all taxes and fees. Fares are not guaranteed until payment is made.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  // Saved card selection
+  document.querySelectorAll('.saved-card-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      document.querySelectorAll('.saved-card-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+    });
+  });
+
+  // Countdown timer
+  let secs = 28*60+14;
+  const timer = document.querySelector('.timer-box span');
+  setInterval(() => {
+    if (secs <= 0) return;
+    secs--;
+    const m = String(Math.floor(secs/60)).padStart(2,'0');
+    const s = String(secs%60).padStart(2,'0');
+    timer.textContent = `⏱ 00:${m}:${s}`;
+  }, 1000);
+
+  // Modal tabs
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
