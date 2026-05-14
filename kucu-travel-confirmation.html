@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kucu Travel – Booking Confirmed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0B1F3A;
+    --orange: #E85D04;
+    --green: #22A861;
+    --green-light: #E6F7EF;
+    --blue-link: #1A6FDB;
+    --text-dark: #0B1F3A;
+    --text-mid: #4A5568;
+    --text-light: #718096;
+    --border: #E2E8F0;
+    --bg-page: #F0F4F8;
+    --white: #FFFFFF;
+    --red-price: #E85D04;
+    --badge-issued: #E6F3FD;
+    --badge-issued-text: #1A6FDB;
+    --shadow: 0 2px 8px rgba(0,0,0,0.07);
+    --radius: 12px;
+    --font-head: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-page);
+    color: var(--text-dark);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    background: var(--navy);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 0;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 40px;
+    text-decoration: none;
+  }
+  .owl-icon {
+    width: 38px; height: 38px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .owl-icon svg { width: 34px; height: 34px; }
+  .nav-brand { font-family: var(--font-head); line-height: 1.1; }
+  .nav-brand span:first-child { color: #fff; font-weight: 700; font-size: 16px; }
+  .nav-brand span.orange { color: var(--orange); }
+  .nav-brand small { display: block; color: #a0aec0; font-size: 10px; font-weight: 400; font-family: var(--font-body); }
+
+  .nav-links { display: flex; gap: 28px; flex: 1; }
+  .nav-links a { color: #CBD5E0; font-size: 13.5px; font-weight: 400; text-decoration: none; font-family: var(--font-body); transition: color .2s; }
+  .nav-links a:hover { color: #fff; }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .nav-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.2); margin: 0 6px; }
+
+  .btn-login {
+    display: flex; align-items: center; gap: 7px;
+    color: #fff; font-size: 13.5px; font-weight: 500;
+    cursor: pointer; font-family: var(--font-body);
+    background: none; border: none;
+  }
+  .btn-login .avatar-ic {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-login .avatar-ic svg { width: 15px; height: 15px; fill: #fff; }
+
+  .btn-currency, .btn-lang {
+    display: flex; align-items: center; gap: 5px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px; padding: 5px 10px;
+    color: #fff; font-size: 13px; font-weight: 500;
+    background: none; cursor: pointer; font-family: var(--font-body);
+  }
+  .btn-lang svg, .btn-currency svg { width: 14px; height: 14px; }
+
+  /* ── PAGE WRAPPER ── */
+  .page { max-width: 1140px; margin: 0 auto; padding: 28px 16px 40px; display: grid; grid-template-columns: 1fr 310px; gap: 20px; align-items: start; }
+
+  /* ── LEFT CARD ── */
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+
+  /* Confirmation header */
+  .confirm-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 16px; position: relative; }
+  .check-circle { width: 52px; height: 52px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .check-circle svg { width: 28px; height: 28px; }
+  .confirm-text h1 { font-family: var(--font-head); font-size: 24px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+  .confirm-text p.subtitle { color: var(--green); font-size: 14px; font-weight: 600; margin-top: 2px; }
+  .confirm-text p.email-note { color: var(--text-light); font-size: 12.5px; margin-top: 4px; }
+  .email-sent-badge {
+    position: absolute; top: 22px; right: 24px;
+    display: flex; align-items: center; gap: 5px;
+    border: 1.5px solid var(--green); border-radius: 20px;
+    padding: 4px 12px; color: var(--green); font-size: 12px; font-weight: 600;
+  }
+  .email-sent-badge svg { width: 13px; height: 13px; }
+
+  /* Booking meta strip */
+  .booking-meta { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; border-bottom: 1px solid var(--border); }
+  .meta-item { padding: 14px 20px; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--border); }
+  .meta-item:last-child { border-right: none; }
+  .meta-label { display: flex; align-items: center; gap: 7px; color: var(--text-light); font-size: 12px; font-weight: 500; }
+  .meta-label svg { width: 16px; height: 16px; color: var(--text-light); }
+  .meta-value { font-size: 14px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px; }
+  .meta-value.green { color: var(--green); }
+  .meta-value.blue { color: var(--badge-issued-text); }
+  .copy-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; }
+  .copy-btn svg { width: 14px; height: 14px; color: #a0aec0; }
+  .visa-logo { display: flex; align-items: center; gap: 5px; }
+  .visa-logo .visa-text { font-weight: 800; font-style: italic; font-size: 16px; color: #1A1F71; letter-spacing: -0.5px; }
+
+  /* Flight route section */
+  .flight-section { padding: 16px 24px; border-bottom: 1px solid var(--border); }
+  .route-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .route-header svg.plane-ic { width: 18px; height: 18px; color: var(--text-dark); }
+  .route-header h2 { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+  .route-arrows { color: var(--text-dark); font-size: 14px; }
+
+  .flights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .flight-leg { padding: 12px 0; }
+  .flight-leg:first-child { padding-right: 20px; border-right: 1px solid var(--border); }
+  .flight-leg:last-child { padding-left: 20px; }
+
+  .leg-badge { display: inline-flex; align-items: center; border-radius: 4px; padding: 2px 10px; font-size: 11.5px; font-weight: 600; margin-bottom: 8px; }
+  .leg-badge.outbound { background: #EBF5FF; color: #2B6CB0; }
+  .leg-badge.return { background: #EBF5FF; color: #2B6CB0; border: 1.5px solid #2B6CB0; }
+
+  .leg-time { font-size: 12.5px; color: var(--text-light); margin-bottom: 6px; font-weight: 500; }
+
+  .leg-row { display: flex; align-items: flex-start; gap: 10px; }
+  .dep-time { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--text-dark); min-width: 50px; }
+  .dep-code { font-size: 12px; font-weight: 600; color: var(--text-dark); }
+  .dep-name { font-size: 11.5px; color: var(--text-light); }
+
+  .flight-timeline { display: flex; flex-direction: column; align-items: center; padding: 4px 6px 0; gap: 2px; }
+  .airline-dot { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .airline-dot.latam { background: #CC0000; }
+  .timeline-line { width: 2px; height: 22px; background: var(--border); position: relative; }
+  .timeline-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-light); margin: 0 auto; }
+  .stop-info { font-size: 11px; color: var(--text-light); text-align: center; }
+
+  .arr-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
+  .arr-time { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--text-dark); min-width: 50px; display: flex; align-items: flex-start; gap: 3px; }
+  .plus-day { font-size: 11px; color: var(--orange); font-weight: 600; background: #FFF3E6; border-radius: 3px; padding: 1px 4px; align-self: flex-start; margin-top: 4px; }
+
+  /* Passenger / Fare / Next section */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+  .info-col { padding: 18px 20px; }
+  .info-col:not(:last-child) { border-right: 1px solid var(--border); }
+  .info-col h3 { font-family: var(--font-head); font-size: 13.5px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+  .info-col h3 svg { width: 16px; height: 16px; color: var(--text-light); }
+  .passenger-name { font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 2px; }
+  .passenger-type { font-size: 12px; color: var(--text-light); margin-bottom: 12px; }
+  .btn-view-passenger { border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 12.5px; font-weight: 500; color: var(--text-dark); background: var(--white); cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: var(--font-body); }
+  .btn-view-passenger svg { width: 13px; height: 13px; }
+
+  .fare-list { display: flex; flex-direction: column; gap: 7px; }
+  .fare-item { display: flex; align-items: center; gap: 7px; }
+  .fare-item svg.check { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
+  .fare-item span { font-size: 12.5px; color: var(--text-dark); }
+  .included-badge { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--green); }
+
+  .next-list { display: flex; flex-direction: column; gap: 8px; }
+  .next-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-dark); line-height: 1.45; }
+  .next-ic { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+  .info-col.next-col { background: #FAFBFF; border-radius: 0 0 0 0; }
+
+  /* Support bar */
+  .support-bar { padding: 14px 24px; border-bottom: 1px solid var(--border); background: #FAFBFF; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .support-bar .support-label { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-right: 4px; }
+  .support-bar .support-sub { font-size: 11.5px; color: var(--text-light); display: block; }
+  .support-contact { display: flex; align-items: center; gap: 7px; margin-left: 20px; }
+  .support-contact svg { width: 20px; height: 20px; }
+  .support-contact span { font-size: 12px; }
+  .support-contact .contact-type { color: var(--text-dark); font-weight: 600; display: block; }
+  .support-contact .contact-val { color: var(--blue-link); }
+
+  /* Action buttons */
+  .action-bar { padding: 16px 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .btn-action { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: filter .2s; }
+  .btn-action:hover { filter: brightness(0.95); }
+  .btn-action svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--orange); color: #fff; border: none; }
+  .btn-outline { background: var(--white); color: var(--text-dark); border: 1.5px solid var(--border); }
+
+  /* ── RIGHT SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+  .sidebar-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+  .sidebar-card h3 { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .sidebar-card h3 svg { width: 18px; height: 18px; color: var(--text-dark); }
+
+  .payment-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-dark); margin-bottom: 10px; }
+  .payment-row:last-of-type { margin-bottom: 0; }
+  .payment-row .label { color: var(--text-mid); }
+  .payment-row .amount { font-weight: 500; }
+  .payment-row .markup { color: var(--green); font-weight: 600; }
+  .payment-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+  .total-row { display: flex; justify-content: space-between; align-items: center; }
+  .total-row .label { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+  .total-row .amount { font-size: 20px; font-weight: 800; color: var(--orange); font-family: var(--font-head); }
+
+  .booking-detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; margin-bottom: 10px; }
+  .booking-detail-row .dl { color: var(--text-light); }
+  .booking-detail-row .dv { font-weight: 600; color: var(--text-dark); }
+  .booking-detail-row .dv.issued { background: var(--badge-issued); color: var(--badge-issued-text); border-radius: 5px; padding: 2px 10px; font-size: 12px; }
+
+  .secure-box { background: #F0F8FF; border: 1.5px solid #BEE3F8; border-radius: 9px; padding: 12px 14px; display: flex; align-items: flex-start; gap: 9px; margin-top: 14px; }
+  .secure-box svg { width: 18px; height: 18px; color: #2B6CB0; flex-shrink: 0; margin-top: 1px; }
+  .secure-box p { font-size: 12px; color: var(--text-mid); line-height: 1.5; }
+  .secure-box p .stripe { color: var(--blue-link); font-weight: 600; }
+
+  .email-confirm-box { margin-top: 14px; }
+  .email-confirm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .email-confirm-header .ec-title { display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+  .email-confirm-header .ec-title svg { width: 16px; height: 16px; }
+  .sent-badge { background: var(--green); color: #fff; font-size: 11px; font-weight: 700; border-radius: 5px; padding: 2px 9px; }
+  .email-confirm-to { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+  .btn-resend { border: 1.5px solid var(--border); border-radius: 7px; padding: 7px 18px; font-size: 12.5px; font-weight: 600; color: var(--text-dark); background: var(--white); cursor: pointer; font-family: var(--font-body); }
+
+  /* ── FOOTER ── */
+  .footer { text-align: center; padding: 14px 16px; font-size: 12px; color: var(--text-light); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .footer svg { width: 14px; height: 14px; }
+
+  /* Airline LATAM */
+  .latam-logo { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: #CC0000; border-radius: 50%; }
+  .latam-logo svg { width: 18px; height: 18px; fill: #fff; }
+
+  /* Whatsapp green */
+  .wa-green { color: #25D366; }
+  .email-blue { color: #4299E1; }
+  .phone-blue { color: #4299E1; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="owl-icon">
+      <!-- Owl SVG -->
+      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="30" cy="34" rx="18" ry="18" fill="#0B1F3A"/>
+        <circle cx="22" cy="26" r="10" fill="#fff"/>
+        <circle cx="38" cy="26" r="10" fill="#fff"/>
+        <circle cx="22" cy="26" r="7" fill="#0B1F3A"/>
+        <circle cx="38" cy="26" r="7" fill="#0B1F3A"/>
+        <circle cx="22" cy="26" r="4" fill="#fff"/>
+        <circle cx="38" cy="26" r="4" fill="#fff"/>
+        <circle cx="23" cy="25" r="2" fill="#0B1F3A"/>
+        <circle cx="39" cy="25" r="2" fill="#0B1F3A"/>
+        <polygon points="30,30 26,36 34,36" fill="#E85D04"/>
+        <path d="M12 20 Q16 14 22 16" stroke="#0B1F3A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M48 20 Q44 14 38 16" stroke="#0B1F3A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="30" cy="46" rx="14" ry="6" fill="#E85D04"/>
+      </svg>
+    </div>
+    <div class="nav-brand">
+      <div><span>Kucu</span> <span class="orange">Travel</span></div>
+      <small>Intelligent Travel</small>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#">Flights</a>
+    <a href="#">Hotels</a>
+    <a href="#">Packages</a>
+    <a href="#">Music Tours</a>
+    <a href="#">Rewards</a>
+    <a href="#">Contact Us</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-divider"></div>
+    <button class="btn-login">
+      <div class="avatar-ic">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      Login / Sign Up
+    </button>
+    <button class="btn-currency">
+      USD
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+    </button>
+    <button class="btn-lang">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+      EN
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- LEFT MAIN CARD -->
+  <div class="card">
+
+    <!-- Confirmation Header -->
+    <div class="confirm-header">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="confirm-text">
+        <h1>Booking confirmed!</h1>
+        <p class="subtitle">Your ticket has been issued.</p>
+        <p class="email-note">We have sent your itinerary and ticket details to alanm.jt@example.com</p>
+      </div>
+      <div class="email-sent-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Email sent
+      </div>
+    </div>
+
+    <!-- Booking Meta Strip -->
+    <div class="booking-meta">
+      <div class="meta-item">
+        <div class="meta-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Booking reference
+        </div>
+        <div class="meta-value">
+          KCU-839274
+          <button class="copy-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Payment status
+        </div>
+        <div class="meta-value green">Paid</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+          Ticket status
+        </div>
+        <div class="meta-value blue">Issued</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Payment method
+        </div>
+        <div class="meta-value">
+          <div class="visa-logo">
+            <span class="visa-text">VISA</span>
+            <span style="color:#666;font-size:13px;letter-spacing:1px">•••• 3093</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flight Route -->
+    <div class="flight-section">
+      <div class="route-header">
+        <svg class="plane-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L8 8 .8 6.2l-.4 1.4 5.2 2.2-1.9 4.8L2 15l1 1 2.4-1.3 4.8-1.9 2.2 5.2 1.4-.4-.2-.6z"/></svg>
+        <h2>
+          Quito (UIO)
+          <span class="route-arrows" style="font-weight:400">⇌</span>
+          Bangkok (BKK)
+        </h2>
+      </div>
+
+      <div class="flights-grid">
+        <!-- Outbound -->
+        <div class="flight-leg">
+          <span class="leg-badge outbound">Outbound</span>
+          <div class="leg-time">Thu, 21 May 2026 &nbsp;·&nbsp; 19h 35m</div>
+          <div class="leg-row">
+            <div>
+              <div class="dep-time">14:15</div>
+              <div class="dep-code">UIO</div>
+              <div class="dep-name">Quito Mariscal Sucre Intl.</div>
+            </div>
+            <div class="flight-timeline">
+              <div class="latam-logo">
+                <svg viewBox="0 0 24 24"><text x="2" y="18" font-size="10" fill="#fff" font-weight="900" font-family="Arial">LA</text></svg>
+              </div>
+              <div class="timeline-line"></div>
+              <div class="timeline-dot"></div>
+              <div class="stop-info" style="font-size:10.5px;white-space:nowrap">1 stop<br>5h 45m in Bogota</div>
+              <div class="timeline-line"></div>
+            </div>
+          </div>
+          <div class="arr-row" style="margin-top:6px">
+            <div>
+              <div class="arr-time">15:50 <span class="plus-day">+1</span></div>
+              <div class="dep-code">BKK</div>
+              <div class="dep-name">Suvarnabhumi Airport</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Return -->
+        <div class="flight-leg">
+          <span class="leg-badge return">Return</span>
+          <div class="leg-time">Fri, 29 May 2026 &nbsp;·&nbsp; 12h 25m</div>
+          <div class="leg-row">
+            <div>
+              <div class="dep-time">09:30</div>
+              <div class="dep-code">BKK</div>
+              <div class="dep-name">Suvarnabhumi Airport</div>
+            </div>
+            <div class="flight-timeline">
+              <div class="latam-logo">
+                <svg viewBox="0 0 24 24"><text x="2" y="18" font-size="10" fill="#fff" font-weight="900" font-family="Arial">LA</text></svg>
+              </div>
+              <div class="timeline-line"></div>
+              <div class="timeline-dot"></div>
+              <div class="stop-info" style="font-size:10.5px;white-space:nowrap">1 stop<br>2h 10m in Bogota</div>
+              <div class="timeline-line"></div>
+            </div>
+          </div>
+          <div class="arr-row" style="margin-top:6px">
+            <div>
+              <div class="arr-time">14:55</div>
+              <div class="dep-code">UIO</div>
+              <div class="dep-name">Quito Mariscal Sucre Intl.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Passenger / Fare / Next -->
+    <div class="info-grid">
+      <!-- Passenger -->
+      <div class="info-col">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Passenger
+        </h3>
+        <div class="passenger-type">1 Adult</div>
+        <div class="passenger-name">Mr. Alanm Jeshua Tepan Tamayo</div>
+        <br>
+        <button class="btn-view-passenger">
+          View passenger details
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Fare includes -->
+      <div class="info-col">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+          Your fare includes
+        </h3>
+        <div class="fare-list">
+          <div class="fare-item">
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Personal item</span>
+            <span class="included-badge">Included</span>
+          </div>
+          <div class="fare-item">
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Carry-on baggage</span>
+            <span class="included-badge">Included</span>
+          </div>
+          <div class="fare-item">
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Checked baggage</span>
+            <span class="included-badge">Included</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- What happens next -->
+      <div class="info-col next-col" style="background:#FAFBFF;">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          What happens next?
+        </h3>
+        <div class="next-list">
+          <div class="next-item">
+            <svg class="next-ic" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" stroke-width="1.8"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L8 8 .8 6.2l-.4 1.4 5.2 2.2-1.9 4.8L2 15l1 1 2.4-1.3 4.8-1.9 2.2 5.2 1.4-.4-.2-.6z"/></svg>
+            Your ticket has been issued.
+          </div>
+          <div class="next-item">
+            <svg class="next-ic" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>
+            Your itinerary and e-ticket have been sent to your email.
+          </div>
+          <div class="next-item">
+            <svg class="next-ic" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>
+            Arrive at the airport with the same passport used for booking.
+          </div>
+          <div class="next-item">
+            <svg class="next-ic" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span style="color:#718096">Contact us if you need any assistance.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Bar -->
+    <div class="support-bar">
+      <div>
+        <span class="support-label">Need help with your booking?</span>
+        <span class="support-sub">Our support team is here to help you.</span>
+      </div>
+      <div class="support-contact">
+        <!-- WhatsApp -->
+        <svg viewBox="0 0 24 24" fill="#25D366" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <div>
+          <span class="contact-type">WhatsApp Support</span>
+          <span class="contact-val">+44 7884 525492</span>
+        </div>
+      </div>
+      <div class="support-contact" style="margin-left:16px">
+        <!-- Email -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4299E1" stroke-width="1.8" width="20" height="20"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>
+        <div>
+          <span class="contact-type">Email Support</span>
+          <span class="contact-val">info@kucutravel.com</span>
+        </div>
+      </div>
+      <div class="support-contact" style="margin-left:16px">
+        <!-- Phone -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4299E1" stroke-width="1.8" width="20" height="20"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.18 2 2 0 012.2 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+        <div>
+          <span class="contact-type">Call Support</span>
+          <span class="contact-val">+44 7884 525492</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <button class="btn-action btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download itinerary
+      </button>
+      <button class="btn-action btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+        View booking details
+      </button>
+      <button class="btn-action btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        New search
+      </button>
+      <button class="btn-action btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Back to home
+      </button>
+    </div>
+
+  </div><!-- /card -->
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Payment Summary -->
+    <div class="sidebar-card">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Payment summary
+      </h3>
+
+      <div class="payment-row"><span class="label">Base fare</span><span class="amount">US$1,573.44</span></div>
+      <div class="payment-row"><span class="label">Taxes &amp; fees</span><span class="amount">US$489.87</span></div>
+      <div class="payment-row"><span class="label">Markup price</span><span class="markup">US$206.33</span></div>
+      <div class="payment-row"><span class="label">Extra baggage</span><span class="amount">US$0.00</span></div>
+      <div class="payment-row"><span class="label">Extra meal</span><span class="amount">US$0.00</span></div>
+      <div class="payment-row"><span class="label">Extra services</span><span class="amount">US$0.00</span></div>
+
+      <hr class="payment-divider">
+
+      <div class="total-row">
+        <span class="label">Total paid</span>
+        <span class="amount">US$2,269.64</span>
+      </div>
+    </div>
+
+    <!-- Booking Details -->
+    <div class="sidebar-card">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Booking details
+      </h3>
+
+      <div class="booking-detail-row"><span class="dl">Booking date</span><span class="dv">21 May 2026 16:45</span></div>
+      <div class="booking-detail-row"><span class="dl">Payment date</span><span class="dv">21 May 2026 16:47</span></div>
+      <div class="booking-detail-row"><span class="dl">Booking reference</span><span class="dv">KCU-839274</span></div>
+      <div class="booking-detail-row"><span class="dl">Airline PNR</span><span class="dv">ABC123</span></div>
+      <div class="booking-detail-row"><span class="dl">Ticket status</span><span class="dv issued">Issued</span></div>
+
+      <div class="secure-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <p>All payments are secure and encrypted. Processed by <span class="stripe">Stripe</span>.</p>
+      </div>
+
+      <div class="email-confirm-box">
+        <hr class="payment-divider" style="margin-bottom:14px">
+        <div class="email-confirm-header">
+          <div class="ec-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>
+            Confirmation email
+          </div>
+          <span class="sent-badge">Sent</span>
+        </div>
+        <div class="email-confirm-to">Sent to: alanm.jt@example.com</div>
+        <button class="btn-resend">Resend email</button>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /page -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+  Your payment is secure and encrypted. Kucu Travel uses industry-standard security to protect your data.
+</div>
+
+</body>
+</html>
